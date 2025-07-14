@@ -57,16 +57,39 @@ def joystick_direction(x, y):
     print("Calibration Success!")
     print(f"X min: {x_min}, X max: {x_max}, Center: {x_center}")
     print(f"Y min: {y_min}, y max: {y_max}, Y-center: {y_center}")
+        
+        
+    joystick_library = {
+    "x_val": x_val
+    "x_min": x_min,
+    "x_max": x_max,
+    "x_center": x_center,
+    "y_val": y_val
+    "y_min": y_min,
+    "y_max": y_max,
+    "y_center": y_center,
+    }
+    
+    return joystick_library
 
-    normalize_process(x_val, x_center, x_min, x_max)
+def normalize_process(joystick_library):
+    x_center = joystick_library["x_center"]
+    x_min = joystick_library["x_min"]
+    x_max = joystick_library["x_max"]
 
-def normalize_process(x_val, x_center, x_min, x_max):
+    y_center = joystick_library["y_center"]
+    y_min = joystick_library["y_min"]
+    y_max = joystick_library["y_max"]
+
     normalized_x = normalize(x_val, x_center, x_min, x_max)
     normalized_y = normalize(y_val, y_center, y_min, y_max)
 
-    #Polish the rules
+    # Polish the rules
     x = apply_rules(normalized_x)
     y = apply_rules(normalized_y)
+
+    print(f"Direction: X={x}, Y={y}")
+
 
 
 def apply_rules(val, threshold=0.1):
@@ -118,10 +141,11 @@ def get_button_state(keyboard):
 def main():
     print("Test Print")
     joystick_dictionary = joystick_init()
+    joystick_library = joystick_control(joystick_dictionary)
 
 
     while True:
-        joystick_control(joystick_dictionary)
+        normalize_process(joystick_library)
         #What should we do after getting the button state?
         #None yet so far
 
