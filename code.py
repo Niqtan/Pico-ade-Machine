@@ -1,9 +1,8 @@
 import board
-import busio
+
 import digitalio
 import analogio
 import time
-import machine
 
 def uart_init():
     uart = busio.UART(board.TX, board.RX, baudrate=9600)
@@ -14,7 +13,7 @@ def uart_init():
 
 def joystick_init():
     joystick_dictionary = {
-        "x": analogio.AnalogIn(board.A0), #A.K.A GPIO 26
+        "x": analogio.AnalogIn(board.A2), #A.K.A GPIO 28
         "y": analogio.AnalogIn(board.A1), #A.K.A GPIO 27
         # Turn on or off buttons
         "sw": digitalio.DigitalInOut(board.GP15),
@@ -26,17 +25,10 @@ def joystick_init():
     return joystick_dictionary
 
 def joystick_control(joystick_dictionary):
-    # Keep reading the values
-    while True:
-        VRx = joystick_dictionary["x"].read_u16()
-        VRy = joystick_dictionary["y".read_u16()
-        pressed = not joystick_dictionary["sw"].value
+    pressed = not joystick_dictionary["sw"].value
 
-
-        # Adjust direction to accordingly to the data
-        joystick_direction(VRx, VRy)
-
-        time.sleep(0.5)
+    joystick_direction(joystick_dictionary["x"], joystick_dictionary["y"])
+    time.sleep(0.5)
 def joystick_direction(x, y):
     # Logic for adjusting the direction according to the data using conditionals
     #Reminder max is 65535 which basically means 3.3V
@@ -44,37 +36,38 @@ def joystick_direction(x, y):
     #ex,,, 32768 = Neutral
 
     #Initial calibration
-    min = 65535
-    max = 0
+    min_val = 65535
+    max_val = 0
 
     print("Calibrate the joystick")
-    start_time = time.ticks_ms()
+    start_time = time.monotonic()
 
-    while time.ticks_diff(time.ticks_ms(), start_time) < 3000:
-        x_data = x.read_u16()
-        y_data = y.read_u16()
-        x_min = min(min, x_data)
-        x_max = max(max, x_data)
-        y_min = min(min, y_data)
-        y_max = max(max, y_data)
+    while time.monotonic() - start_time < 3:
+        x_val = x.value
+        y_val = y.value
 
-    x_center = x_data / 2
-    y_center = y_data / 2
+        x_min = min(min_val, x_val)
+        x_max = max(max_val, x_val)
+        y_min = min(min_val, y_val)
+        y_max = max(max_val, y_val)
+
+    x_center = x_max / 2
+    y_center = y_max / 2
 
     print("Calibration Success!")
     print(f"X min: {x_min}, X max: {x_max}, Center: {x_center}")
     print(f"Y min: {y_min}, y max: {y_max}, Y-center: {y_center}")
-    print()
 
-    while True:
-        normalized_x = normalize(x, center, min, max)
-        normalized_y = normalize(y, center, min, max)
+    normalize_process(x_val, x_center, x_min, x_max)
 
-        #Polish the rules
-        x = apply_rules(normalized_x)
-        y = apply_rules(normalized_y)
+def normalize_process(x_val, x_center, x_min, x_max):
+    normalized_x = normalize(x_val, x_center, x_min, x_max)
+    normalized_y = normalize(y_val, y_center, y_min, y_max)
 
-        #After polishing, the VRx and VRy of the joystick should be adjusted accordingly now
+    #Polish the rules
+    x = apply_rules(normalized_x)
+    y = apply_rules(normalized_y)
+
 
 def apply_rules(val, threshold=0.1):
     if val < threshold:
@@ -95,39 +88,40 @@ def keyboard_init():
 
     #R3 is when the joystick is pressed downwards
 
-    # Place the keys in dictionaries with their corresponding GPIOs
     keyboard = {
-        "Select": digitalio.DigitalInOut(board.22),
-        "X": digitalio.DigitalInOut(board.21),
-        "Y": digitalio.DigitalInOut(board.17),
-        "Z": digitalio.DigitalInOut(board.16),
-        "C": digitalio.DigitalInOut(board.20),
-        "A": digitalio.DigitalInOut(board.19),
-        "B": digitalio.DigitalInOut(board.18),
-        "R1": digitalio.DigitalInOut(board.9),
-        "R2": digitalio.DigitalInOut(board.11),
-        "R3": digitalio.DigitalInOut(board.26),
+    "Select": digitalio.DigitalInOut(board.GP22),
+    "X": digitalio.DigitalInOut(board.GP21),
+    "Y": digitalio.DigitalInOut(board.GP17),
+    "Z": digitalio.DigitalInOut(board.GP16),
+    "C": digitalio.DigitalInOut(board.GP20),
+    "A": digitalio.DigitalInOut(board.GP19),
+    "B": digitalio.DigitalInOut(board.GP18),
+    "R1": digitalio.DigitalInOut(board.GP9),
+    "R2": digitalio.DigitalInOut(board.GP11),
+    "R3": digitalio.DigitalInOut(board.GP26),
     }
+
 
     return keyboard
 
 def get_button_state(keyboard):
     for key, name in keyboard.items():
-    if key.value() == 0:
-        state = "pressed"
-    else:
-        state = "not pressed"
-    print(f"{name} is set to {state}")
-    time.sleep(0.5)
+        name.direction = digitalio.Direction.INPUT
+        name.pull = digitalio.Pull.UP
+        if name.value == 0:
+            state = "pressed"
+        else:
+            state = "not pressed"
+        print(f"{key} is set to {state}")
+        time.sleep(0.5)
 
 def main():
     print("Test Print")
     joystick_dictionary = joystick_init()
-    keyboard_dictionary = keyboard_init()
+
 
     while True:
         joystick_control(joystick_dictionary)
-        get_button_state(keyboard_dictionary)
         #What should we do after getting the button state?
         #None yet so far
 
