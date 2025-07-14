@@ -17,3 +17,7 @@ Due to taking to long on making the CAD, we didn't got to 3d print it, but that 
 We used some craftsy inspired hackclub vibes and logos! and maybe a hidden orpheus somewhere hehe.
 
 You can DM us in Slack if you have any questions/suggestions/feedback/
+
+
+[Check out the Demo](https://www.youtube.com/watch?v=qOujK8my25s&feature=youtu.be)!1
+
