@@ -10,6 +10,7 @@ Fitting everything without over-modeling it, thi was done so it-s tiny enough to
 
 # WIRING DIAGRAM 
 Here's the wiring diagram
+![Uploading Captura de pantalla 2025-07-14 214849.png…]()
 
 
 
