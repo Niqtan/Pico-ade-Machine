@@ -32,14 +32,14 @@ Clone the ![repo](https://github.com/adafruit/Raspberry-Pi-Installer-Scripts)
 
 And run pitft-fbcp.py with sudo. 
 
-For the first option, hit 6
-For the second option, hit 2
-For the third option, hit 1 or 3, ( run the script again with the other if it is upside down)
-For the last option, hit 0.
+- For the first option, hit 6
+- For the second option, hit 2
+- For the third option, hit 1 or 3, ( run the script again with the other if it is upside down)
+- For the last option, hit 0.
 
 As for parsing the controls, run the controls-helper.py to accept input. Add the line:
 
-sudo python3 /path/to/controls-helper.py &
+ ```sudo python3 /path/to/controls-helper.py & ```
 
 That should be all the software necessary.
 # CARDBOARD CASE 
