@@ -10,7 +10,8 @@ Fitting everything without over-modeling it, thi was done so it-s tiny enough to
 
 # WIRING DIAGRAM 
 Here's the wiring diagram
-![Uploading Captura de pantalla 2025-07-14 214849.png…]()
+<img width="944" height="796" alt="Captura de pantalla 2025-07-14 214849" src="https://github.com/user-attachments/assets/b71c0090-82e6-413b-a3b4-0343d6cb9eab" />
+
 
 # SOFTWARE
 
